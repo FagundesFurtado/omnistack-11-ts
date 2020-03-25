@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  omnistack:
+    build: ./.devcontainer
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 3333:3333
+    links:
+      - db
+    networks:
+      - netstack
+    container_name: omnistack
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - netstack
+    environment:
+      - MYSQL_ROOT_PASSWORD=omnistack
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=omnistack
+      - MYSQL_DATABASE=hero
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - omnibase:/var/lib/mysql
+volumes:
+  omnibase:
+networks:
+  netstack:
+    external: true
